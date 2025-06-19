@@ -112,7 +112,7 @@ func GenerarYEnviarPaquete() {
 	paquete := LeerConsola()
 	// Se lee de la consola y se carga lo leído en el paquete.
 
-	log.Printf("paquete a enviar: %+v", paquete)
+	log.Printf("Paquete a enviar: %+v", paquete)
 	// Se loggea el paquete que se va a enviar.
 
 	EnviarPaquete(globals.ClientConfig.Ip, globals.ClientConfig.Puerto, paquete)
@@ -132,7 +132,7 @@ func EnviarMensaje(ip string, puerto int, mensajeTxt string) {
 	// Si hay un error, se guarda en err.
 
 	if err != nil {
-		log.Printf("error codificando mensaje: %s", err.Error())
+		log.Printf("Error codificando mensaje: %s", err.Error())
 	}
 	// Si hay error, se loggea un mensaje personalizado
 	// que incluye la descripción del error.
@@ -156,12 +156,12 @@ func EnviarMensaje(ip string, puerto int, mensajeTxt string) {
 	// Si hay un error al enviar la petición, se guarda en err.
 
 	if err != nil {
-		log.Printf("error enviando mensaje a ip:%s puerto:%d", ip, puerto)
+		log.Printf("Error enviando mensaje a ip:%s puerto:%d", ip, puerto)
 	}
 	// Si hay un error al enviar el mensaje, se loggea un mensaje personalizado
 	// que incluye la IP y el puerto a los que se intentó enviar el mensaje.
 
-	log.Printf("respuesta del servidor: %s", resp.Status)
+	log.Printf("Respuesta del servidor: %s", resp.Status)
 	// Se loggea un mensaje personalizado con el estado de la respuesta
 	// del servidor a la petición realizada.
 }
@@ -175,7 +175,7 @@ func EnviarPaquete(ip string, puerto int, paquete Paquete) {
 	// Si hay un error, se guarda en err.
 
 	if err != nil {
-		log.Printf("error codificando mensajes: %s", err.Error())
+		log.Printf("Error codificando paquete: %s", err.Error())
 	}
 	// Si hay error, se loggea un mensaje personalizado
 	// que incluye la descripción del error.
@@ -199,12 +199,12 @@ func EnviarPaquete(ip string, puerto int, paquete Paquete) {
 	// Si hay un error al enviar la petición, se guarda en err.
 
 	if err != nil {
-		log.Printf("error enviando mensajes a ip:%s puerto:%d", ip, puerto)
+		log.Printf("Error enviando paquete a ip:%s puerto:%d", ip, puerto)
 	}
 	// Si hay un error al enviar el paquete, se loggea un mensaje personalizado
 	// que incluye la IP y el puerto a los que se intentó enviar el paquete.
 
-	log.Printf("respuesta del servidor: %s", resp.Status)
+	log.Printf("Respuesta del servidor: %s", resp.Status)
 	// Se loggea un mensaje personalizado con el estado de la respuesta
 	// del servidor a la petición realizada.
 }
