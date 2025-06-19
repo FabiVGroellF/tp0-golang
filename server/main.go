@@ -10,7 +10,7 @@ func main() {
 	// mux permite manejar las rutas desde donde
 	// se recibirán las peticiones HTTP.
 
-	// ETAPA 3
+	// ETAPA 3 - CONEXION CLIENTE-SERVIDOR
 
 	// Configurar las rutas y asociar funciones a ellas
 
@@ -35,4 +35,6 @@ func main() {
 	}
 	// Si hay un error al iniciar el servidor, se imprime el error
 	// y se detiene el programa.
+
+	// FIN DE ETAPA 3
 }

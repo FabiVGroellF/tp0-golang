@@ -35,9 +35,9 @@ func RecibirPaquetes(w http.ResponseWriter, r *http.Request) {
 	// Si hay un error al decodificar, se guarda en err.
 
 	if err != nil {
-		log.Printf("error al decodificar mensaje: %s\n", err.Error())
+		log.Printf("Error al decodificar paquete: %s\n", err.Error())
 		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("error al decodificar mensaje"))
+		w.Write([]byte("Error al decodificar paquete"))
 		return
 	}
 	// Si hay un error al decodificar el paquete,
