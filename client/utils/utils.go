@@ -92,7 +92,7 @@ func LeerConsola() Paquete {
 			break
 			// Si el texto ingresado es un salto de línea,
 			// se sale del bucle y no se loggea.
-			
+
 		} else {
 			text = text[:len(text)-1]
 			// Se elimina el último carácter de text, que es el salto de línea.
@@ -109,13 +109,14 @@ func LeerConsola() Paquete {
 }
 
 func GenerarYEnviarPaquete() {
-	// Leemos y cargamos el paquete
 	paquete := LeerConsola()
+	// Se lee de la consola y se carga lo leído en el paquete.
 
 	log.Printf("paquete a enviar: %+v", paquete)
+	// Se loggea el paquete que se va a enviar.
 
-	// Enviamos el paquete
 	EnviarPaquete(globals.ClientConfig.Ip, globals.ClientConfig.Puerto, paquete)
+	// Se envía el paquete.
 }
 
 func EnviarMensaje(ip string, puerto int, mensajeTxt string) {
@@ -150,7 +151,8 @@ func EnviarMensaje(ip string, puerto int, mensajeTxt string) {
 	// que significa que son datos en formato JSON,
 	// y tambien recibe un buffer de bytes donde se guarda
 	// el contenido de body, que es el mensaje codificado en JSON.
-	// Si la petición se envía correctamente, se guarda la respuesta en resp.
+	// Si la petición se envía correctamente, se guarda la respuesta
+	// que manda el servidor en la variable resp.
 	// Si hay un error al enviar la petición, se guarda en err.
 
 	if err != nil {
@@ -165,18 +167,46 @@ func EnviarMensaje(ip string, puerto int, mensajeTxt string) {
 }
 
 func EnviarPaquete(ip string, puerto int, paquete Paquete) {
+	// Recibe la IP, el puerto y el paquete a enviar.
+
 	body, err := json.Marshal(paquete)
+	// json.Marshal convierte el paquete a formato JSON.
+	// Si no hay errores, se guarda el resultado en body.
+	// Si hay un error, se guarda en err.
+
 	if err != nil {
 		log.Printf("error codificando mensajes: %s", err.Error())
 	}
+	// Si hay error, se loggea un mensaje personalizado
+	// que incluye la descripción del error.
+	// err.Error() devuelve una cadena que describe el error.
 
 	url := fmt.Sprintf("http://%s:%d/paquetes", ip, puerto)
+	// Se construye la URL a la que se enviará el paquete.
+	// Sprintf permite imprimir usando placeholders.
+	// La dirección "/paquetes" es la dirección de la ruta
+	// donde el servidor espera recibir paquetes.
+
 	resp, err := http.Post(url, "application/json", bytes.NewBuffer(body))
+	// http.Post se usar para enviar datos a un servidor HTTP.
+	// Recibe la URL por donde se enviará el paquete,
+	// recibe además el tipo de contenido, en este caso "application/json",
+	// que significa que son datos en formato JSON,
+	// y también recibe un buffer de bytes donde se guarda
+	// el contenido de body, que es el paquete codificado en JSON.
+	// Si la petición se envía correctamente, se guarda la respuesta
+	// que manda el servidor en la variable resp.
+	// Si hay un error al enviar la petición, se guarda en err.
+
 	if err != nil {
 		log.Printf("error enviando mensajes a ip:%s puerto:%d", ip, puerto)
 	}
+	// Si hay un error al enviar el paquete, se loggea un mensaje personalizado
+	// que incluye la IP y el puerto a los que se intentó enviar el paquete.
 
 	log.Printf("respuesta del servidor: %s", resp.Status)
+	// Se loggea un mensaje personalizado con el estado de la respuesta
+	// del servidor a la petición realizada.
 }
 
 func ConfigurarLogger() {
