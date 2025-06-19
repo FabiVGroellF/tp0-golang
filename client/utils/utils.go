@@ -22,11 +22,11 @@ type Paquete struct {
 
 func IniciarConfiguracion(filePath string) *globals.Config {
 	// Recibe el path del archivo de configuración
-	// y devuelve un puntero a una estructura Config
+	// y devuelve un puntero a una estructura Config.
 
 	var config *globals.Config
 	// Inicializamos la variable config para que tome el formato
-	// de la estructura globals.Config
+	// de la estructura globals.Config.
 	// Es decir, un struct que guarda ip, puerto y mensaje.
 
 	configFile, err := os.Open(filePath)
@@ -48,23 +48,30 @@ func IniciarConfiguracion(filePath string) *globals.Config {
 
 	jsonParser := json.NewDecoder(configFile)
 	// Se crea un decoder con la función json.NewDecoder
-	// que leerá el archivo configFile y se asigna a jsonParser.
+	// que leerá el archivo configFile y se asigna a jsonParser,
 	// siendo configFile el archivo de configuración que se abrió previamente.
 
 	jsonParser.Decode(&config) 
-	// Decode hace que el jsonParser decodifique el contenido del archivo abierto
-	// y vaya llenando la estructura config con los datos decodificados.
+	// Decode hace que el jsonParser decodifique el contenido del archivo
+	// abierto y vaya llenando la estructura config con los datos decodificados.
 
 	return config
 	// Finalmente, se devuelve el puntero a la estructura config
 	// que contiene los datos del archivo de configuración.
 }
 
-func LeerConsola() {
-	// Leer de la consola
+func LeerConsola() Paquete {
+	// Lee la consola hasta que el usuario ingrese un salto de línea
+	// y devuelve un paquete de tipo struct Paquete.
+
+	paquete := Paquete{
+		Valores: []string{},
+	}
+	// Inicializamos un nuevo paquete de tipo struct Paquete.
+	// El campo Valores es un slice de strings que se inicializa como vacío.
+
 	reader := bufio.NewReader(os.Stdin)
-	// Se guarda en reader un nuevo lector de búfer
-	// NewReader crea un nuevo lector de búfer
+	// NewReader crea un nuevo lector de búfer (bufio)
 	// el cual lee desde la entrada estándar (os.Stdin).
 	// En este caso, la entrada estándar es la consola.
 
@@ -72,48 +79,89 @@ func LeerConsola() {
 	// Se loggea un mensaje pidiendo al usuario que ingrese los mensajes.
 	// Println agrega un salto de línea al final del mensaje.
 
-	var text string
-
 	for {
-		text, _ = reader.ReadString('\n')
+		// Bucle while para leer mensajes de la consola
+		// mientras el usuario no ingrese un salto de línea.
+
+		text, _ := reader.ReadString('\n')
 		// Se guarda en text la cadena de texto leída desde la consola.
 		// ReadString lee hasta que encuentra el carácter especificado
 		// En este caso, lee hasta que encuentra un salto de línea ('\n').
-		
+
 		if text == "\n" {
 			break
 			// Si el texto ingresado es un salto de línea,
 			// se sale del bucle y no se loggea.
+			
 		} else {
+			text = text[:len(text)-1]
+			// Se elimina el último carácter de text, que es el salto de línea.
+
 			log.Print(text)
 			// Se loggea el texto ingresado por el usuario.
 			// No se agrega un salto de línea al final del mensaje.
+
+			paquete.Valores = append(paquete.Valores, text)
+			// Se agrega el texto ingresado al slice Valores del paquete.
 		}
 	}
+	return paquete
 }
 
 func GenerarYEnviarPaquete() {
-	paquete := Paquete{}
 	// Leemos y cargamos el paquete
+	paquete := LeerConsola()
 
-	log.Printf("paqute a enviar: %+v", paquete)
-	// Enviamos el paqute
+	log.Printf("paquete a enviar: %+v", paquete)
+
+	// Enviamos el paquete
+	EnviarPaquete(globals.ClientConfig.Ip, globals.ClientConfig.Puerto, paquete)
 }
 
 func EnviarMensaje(ip string, puerto int, mensajeTxt string) {
+	// Recibe la IP, el puerto y el mensaje a enviar.
+
 	mensaje := Mensaje{Mensaje: mensajeTxt}
+	// Se crea un nuevo mensaje de tipo struct Mensaje
+	// donde el campo Mensaje se inicializa con el mensajeTxt recibido.
+
 	body, err := json.Marshal(mensaje)
+	// json.Marshal convierte el argumento a formato JSON.
+	// Si no hay errores, se guarda el resultado en body.
+	// Si hay un error, se guarda en err.
+
 	if err != nil {
 		log.Printf("error codificando mensaje: %s", err.Error())
 	}
+	// Si hay error, se loggea un mensaje personalizado
+	// que incluye la descripción del error.
+	// err.Error() devuelve una cadena que describe el error.
 
 	url := fmt.Sprintf("http://%s:%d/mensaje", ip, puerto)
+	// Se construye la URL a la que se enviará el mensaje.
+	// Sprintf permite imprimir usando placeholders.
+	// La dirección "/mensaje" es la dirección de la ruta
+	// donde el servidor espera recibir mensajes.
+
 	resp, err := http.Post(url, "application/json", bytes.NewBuffer(body))
+	// http.Post se usar para enviar datos a un servidor HTTP.
+	// Recibe la URL por donde se enviará el mensaje,
+	// recibe además el tipo de contenido, en este caso "application/json",
+	// que significa que son datos en formato JSON,
+	// y tambien recibe un buffer de bytes donde se guarda
+	// el contenido de body, que es el mensaje codificado en JSON.
+	// Si la petición se envía correctamente, se guarda la respuesta en resp.
+	// Si hay un error al enviar la petición, se guarda en err.
+
 	if err != nil {
 		log.Printf("error enviando mensaje a ip:%s puerto:%d", ip, puerto)
 	}
+	// Si hay un error al enviar el mensaje, se loggea un mensaje personalizado
+	// que incluye la IP y el puerto a los que se intentó enviar el mensaje.
 
 	log.Printf("respuesta del servidor: %s", resp.Status)
+	// Se loggea un mensaje personalizado con el estado de la respuesta
+	// del servidor a la petición realizada.
 }
 
 func EnviarPaquete(ip string, puerto int, paquete Paquete) {

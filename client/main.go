@@ -9,7 +9,8 @@ import (
 func main() {
 	utils.ConfigurarLogger()
 
-	// ETAPA 2
+	// ETAPA 2 - Comandos Básicos
+
 	// LOGGING
 
 	// loggear "Hola soy un log" usando la biblioteca log
@@ -29,16 +30,15 @@ func main() {
 	// loggeamos el valor del MENSAJE de la config
 	log.Println(globals.ClientConfig.Mensaje)
 
-	// LEER DE LA CONSOLA
-	utils.LeerConsola()
+	// FIN DE ETAPA 2
+
+	// ETAPA 3
 
 	// ADVERTENCIA: Antes de continuar, tenemos que asegurarnos que el servidor esté corriendo para poder conectarnos a él
 
-	// enviar un mensaje al servidor con el valor de la config
-
-	// leer de la consola el mensaje
-	
+	// Enviar como mensaje al servidor el valor CLAVE de la config
+	utils.EnviarMensaje(globals.ClientConfig.Ip, globals.ClientConfig.Puerto, globals.ClientConfig.Clave)
 
 	// generamos un paquete y lo enviamos al servidor
-	// utils.GenerarYEnviarPaquete()
+	utils.GenerarYEnviarPaquete()
 }
